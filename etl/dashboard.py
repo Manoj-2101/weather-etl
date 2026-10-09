@@ -70,7 +70,8 @@ def build_dashboard():
     keep = [ccol] + ([tcol] if tcol else []) + nums
     out = df[keep].copy()
     if tcol:
-        out[tcol] = out[tcol].dt.strftime("%Y-%m-%d %H:%M")
+        f = "%Y-%m-%d" if (out[tcol].dt.hour == 0).all() else "%Y-%m-%d %H:%M"
+        out[tcol] = out[tcol].dt.strftime(f)
     rows = json.loads(out.to_json(orient="records"))
 
     data = {"rows": rows, "metrics": nums, "city": ccol, "time": tcol,
