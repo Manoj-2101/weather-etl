@@ -4,6 +4,7 @@ from pathlib import Path
 from etl.extract import extract_all
 from etl.transform import transform_all
 from etl.load import load_to_mysql
+from etl.dashboard import build_dashboard
 
 Path("logs").mkdir(exist_ok=True)
 logging.basicConfig(
@@ -27,9 +28,17 @@ def run():
 
         load_to_mysql(df)
         logging.info("Load finished: %d rows", len(df))
+
     except Exception:
         logging.exception("ETL run failed")
         raise
+
+    try:
+        build_dashboard()
+        logging.info("Dashboard updated")
+    except Exception:
+        logging.exception("Dashboard update failed (ETL data is safe)")
+
     logging.info("ETL run completed successfully")
 
 
